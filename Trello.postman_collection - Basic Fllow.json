@@ -1,0 +1,686 @@
+{
+	"info": {
+		"_postman_id": "a0340ccd-8918-45e3-9e82-5da748404e46",
+		"name": "Trello",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25588532"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.trello.com/",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a board ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status Code\", ()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"const response= pm.response.json()\r",
+							"pm.test(\"Name of the Board\",()=>{\r",
+							" pm.expect(response.name).to.eql(\"New Project\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Verify PremissionLevel\",()=>{\r",
+							" pm.expect(response.prefs.permissionLevel).to.eql(\"private\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response time\", ()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
+							"})\r",
+							"\r",
+							"pm.collectionVariables.set(\"Board ID\",response.id )"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function randomnumber () {\r",
+							"    Math.random()*10\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}1/boards/?name=New Project&key={{Apikey}}&token={{token}}",
+					"host": [
+						"{{baseurl}}1"
+					],
+					"path": [
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "New Project"
+						},
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"statuscode\", () =>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"const response = pm.response.json()\r",
+							"pm.test(\"Is Created board is same\", ()=>{\r",
+							"    pm.expect(response.id).to.eql(pm.collectionVariables.get(\"Board ID\"))\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}1/boards/:id?key={{Apikey}}&token={{token}}",
+					"host": [
+						"{{baseurl}}1"
+					],
+					"path": [
+						"boards",
+						":id"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{Board ID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"staus Message\", ()=>{\r",
+							"    pm.response.to.have.status(\"OK\")\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}1/members/me/boards?key={{Apikey}}&token={{token}}",
+					"host": [
+						"{{baseurl}}1"
+					],
+					"path": [
+						"members",
+						"me",
+						"boards"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Open list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json()\r",
+							"pm.collectionVariables.set(\"openlist ID\", response.id )\r",
+							"\r",
+							"pm.test(\"staus code\", ()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/1/boards/:id/lists?key={{Apikey}}&token={{token}}&name=Open",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						":id",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "Open"
+						},
+						{
+							"key": "name",
+							"value": "In progress",
+							"disabled": true
+						},
+						{
+							"key": "name",
+							"value": "Reopen",
+							"disabled": true
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{Board ID}}",
+							"description": "ID of Board to create list"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create In Progress  list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json()\r",
+							"pm.collectionVariables.set(\"Inprogresslist ID\", response.id )"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/1/boards/:id/lists?key={{Apikey}}&token={{token}}&name=In Progress",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						":id",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "In Progress"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{Board ID}}",
+							"description": "ID of the Board"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new Card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json()\r",
+							"pm.collectionVariables.set(\"card ID\", response.id )"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"New issue under API\",\r\n    \"desc\" : \"Please test all possible scenarios\",\r\n    \"due\" : \"04/10/2023\",\r\n    \"start\" : \"04/05/2023\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/1/cards?idList={{openlist ID}}&key={{Apikey}}&token={{token}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"1",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{openlist ID}}",
+							"description": "Id of list to create card in particular list"
+						},
+						{
+							"key": "name",
+							"value": "New issue under API",
+							"disabled": true
+						},
+						{
+							"key": "desc",
+							"value": "Test New API",
+							"disabled": true
+						},
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Card in list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/1/lists/:id/cards?key={{Apikey}}&token={{token}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						":id",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{openlist ID}}",
+							"description": "Id of list"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Move all cards to another list",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"idList\" : \"{{Inprogresslist ID}}\",\r\n    \"idBoard\" : \"{{Board ID}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/1/lists/:id/moveAllCards?key={{Apikey}}&token={{token}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						":id",
+						"moveAllCards"
+					],
+					"query": [
+						{
+							"key": "idBoard",
+							"value": "642d6e4afcae113de3585a77",
+							"disabled": true
+						},
+						{
+							"key": "idList",
+							"value": "642d9d53b2a4db3a680beb96",
+							"description": "ID of the list where cards need to be moved",
+							"disabled": true
+						},
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{openlist ID}}",
+							"description": "ID of the List where cards exist"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Move single card to another list",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"idList\" : \"{{openlist ID}}\", // The ID of the list the card should be in\r\n    \"idBoard\" : \"{{Board ID}}\" // The ID of the board the card should be on\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/1/cards/:id?key={{Apikey}}&token={{token}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						":id"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "idList",
+							"value": "642d9d53b2a4db3a680beb96",
+							"description": "The ID of the list the card should be in",
+							"disabled": true
+						},
+						{
+							"key": "idBoard",
+							"value": "642d6e4afcae113de3585a77",
+							"description": "The ID of the board the card should be on",
+							"disabled": true
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{card ID}}",
+							"description": "ID of the card"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Card",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/1/cards/:id?key={{Apikey}}&token={{token}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						":id"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{card ID}}",
+							"description": "ID of the card to delete"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Board",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}1/boards/:id?key={{Apikey}}&token={{token}}",
+					"host": [
+						"{{baseurl}}1"
+					],
+					"path": [
+						"boards",
+						":id"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{Apikey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{Board ID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Apikey",
+			"value": "APIKey"
+		},
+		{
+			"key": "token",
+			"value": "Token\n\n"
+		},
+		{
+			"key": "baseurl",
+			"value": "https://api.trello.com/"
+		},
+		{
+			"key": "Board ID",
+			"value": ""
+		},
+		{
+			"key": "openlist ID",
+			"value": ""
+		},
+		{
+			"key": "Inprogresslist ID",
+			"value": ""
+		},
+		{
+			"key": "card ID",
+			"value": ""
+		}
+	]
+}
