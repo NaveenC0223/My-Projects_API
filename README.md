@@ -1,4 +1,5 @@
-**RUN** -Collection with test for Trello API Assignment:
+# Trello API
+**RUN** Collection with test for Trello API Assignment:
 
 https://documenter.getpostman.com/view/25588532/2s9YBz4bZd
 
